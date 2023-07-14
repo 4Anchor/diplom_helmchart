@@ -1,0 +1,12 @@
+app:
+  image:
+    repository: myapp-image-repo
+    tag: myapp-image-tag
+
+db:
+  image:
+    repository: postgres
+    tag: 13-alpine
+  persistence:
+    enabled: true
+    existingClaim: tutorial-volume
