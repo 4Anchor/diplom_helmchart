@@ -1,47 +1,62 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-app
+  name: {{ include "testapp.fullname" . }}
+  labels:
+    app: {{ include "testapp.name" . }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-app
+      app: {{ include "testapp.name" . }}
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}-app
+        app: {{ include "testapp.name" . }}
     spec:
       containers:
         - name: app
-          image: {{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           ports:
             - containerPort: 3003
           env:
             - name: DB_HOST
-              value: db
+              value: "my-release-postgresql"
             - name: DB_NAME
-              value: {{ .Release.Name }}-dev
+              value: "tutorial-dev"
+              # valueFrom:
+              #   secretKeyRef:
+              #     name: testapp-db-credentials
+              #     key: tutorial-dev
             - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: myapp-secret
-                  key: db-user
+              value: "admin"
+              # valueFrom:
+              #   secretKeyRef:
+              #     name: testapp-db-credentials
+              #     key: admin
             - name: DB_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: myapp-secret
-                  key: db-pass
+              value: "123456"
+              # valueFrom:
+              #   secretKeyRef:
+              #     name: testapp-db-credentials
+              #     key: "123456"
           resources:
             limits:
-              cpu: "0.5"
-              memory: "256Mi"
+              cpu: "500m"
+              memory: "512Mi"
             requests:
-              cpu: "0.2"
-              memory: "128"
-      {{- if .Values.db.persistence.enabled }}
+              cpu: "200m"
+              memory: "256Mi"
+          command:
+            - "sh"
+            - "-c"
+            - "python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:3003"
       volumes:
-        - name: postgres-data
+        - name: data
           persistentVolumeClaim:
-            claimName: {{ .Values.db.persistence.existingClaim }}
-      {{- end }}
+            claimName: tutorial-volume
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0

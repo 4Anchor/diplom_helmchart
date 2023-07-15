@@ -1,17 +1,16 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ .Release.Name }}-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+  name: {{ include "testapp.fullname" . }}-ingress
 spec:
   rules:
-    - http:
+    - host: testapp.ru
+      http:
         paths:
-          - path: /
-            pathType: Prefix
+          - pathType: Prefix
+            path: /
             backend:
               service:
-                name: {{ .Release.Name }}-app
+                name: {{ include "testapp.fullname" . }}
                 port:
-                  number: 3003
+                  number: {{ .Values.service.port }}

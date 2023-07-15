@@ -1,12 +1,14 @@
-app:
-  image:
-    repository: myapp-image-repo
-    tag: myapp-image-tag
+image:
+  repository: 4anchor/testapp
+  tag: 2.0.3
 
-db:
-  image:
-    repository: postgres
-    tag: 13-alpine
-  persistence:
-    enabled: true
-    existingClaim: tutorial-volume
+service:
+  port: 3003
+  type: ClusterIP
+
+persistence:
+  enabled: true
+  size: 1Gi
+
+ingress:
+  enabled: true

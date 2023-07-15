@@ -1,11 +1,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: my-pvc
+  name: tutorial-volume
 spec:
-  storageClassName: fast-storage
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
       storage: 2Gi
+  storageClassName: fast.ru-7a
+  volumeMode: Filesystem
