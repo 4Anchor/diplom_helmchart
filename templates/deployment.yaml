@@ -23,23 +23,20 @@ spec:
             - name: DB_HOST
               value: "my-release-postgresql"
             - name: DB_NAME
-              value: "tutorial-dev"
-              # valueFrom:
-              #   secretKeyRef:
-              #     name: testapp-db-credentials
-              #     key: tutorial-dev
+              valueFrom:
+                secretKeyRef:
+                  name: testapp-db-credentials
+                  key: DB_NAME
             - name: DB_USER
-              value: "admin"
-              # valueFrom:
-              #   secretKeyRef:
-              #     name: testapp-db-credentials
-              #     key: admin
+              valueFrom:
+                secretKeyRef:
+                  name: testapp-db-credentials
+                  key: DB_USER
             - name: DB_PASS
-              value: "123456"
-              # valueFrom:
-              #   secretKeyRef:
-              #     name: testapp-db-credentials
-              #     key: "123456"
+              valueFrom:
+                secretKeyRef:
+                  name: testapp-db-credentials
+                  key: DB_PASS
           resources:
             limits:
               cpu: "500m"
